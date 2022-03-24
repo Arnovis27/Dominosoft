@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Login</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>HOME</h1>
+            <a class="btn btn-primary" href="/create" role="button">CREATE</a>
+            <a class="btn btn-danger" href="/" style="float: right;">Cerrar Sesion</a>
+        </div>  
+        <hr>
+        <div class="container">
+            
+            <form action="">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>DUI</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Correo</th>
+                            <th>Operacion</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        <%for (var i=0; i < tasks.length; i++) {%>
+                            <tr>
+                                <td><%= tasks[i].dui %></td>
+                                <td><%= tasks[i].first_name %></td>
+                                <td><%= tasks[i].last_name %></td>
+                                <td><%= tasks[i].email %></td>
+                                <td><a class="btn btn-primary" href="/update/<%= tasks[i]._id%>">Update</a>
+                                <a class="btn btn-danger" href="/delete/<%= tasks[i]._id%>">Delete</a></td>
+                            </tr>
+                        <%} %>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </body>
+</html>
