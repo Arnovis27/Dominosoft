@@ -41,6 +41,8 @@ router.post("/login",(req,res)=>{
                 res.redirect(camino);
             }
             
+        }else{
+            res.redirect("/")
         }
     });
 });
