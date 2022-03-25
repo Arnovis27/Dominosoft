@@ -1,9 +1,8 @@
 const express= require("express");
 const router= express.Router();
 const userSchema= require("../model/user");
-const datosSchema= require("../model/datos");
 
-var global;
+var global, global2;
 
 //login usuarios 
 router.get("/",(req,res)=>{
@@ -20,7 +19,8 @@ router.post("/login",(req,res)=>{
                 global= req.session.admin;
                 res.redirect("admin/home");
             }else{
-                res.redirect("/");
+                var camino= "empleado/"+req.body.email;
+                res.redirect(camino);
             }
             
         }
@@ -31,6 +31,7 @@ router.post("/login",(req,res)=>{
 router.get('/logout', function (req, res) {
     req.session.destroy();
     global=null;
+    global2= null;
     res.redirect("/")
 });
 
@@ -55,10 +56,11 @@ var autorizado= function(req, res, next) {
       return res.sendStatus(401);
 };
 
+
 //dashboard admin
 router.get("/admin/home",autorizado,function(req,res){
 
-    datosSchema.find({},(err,data)=>{
+    userSchema.find({},(err,data)=>{
         if(err) throw err;
             res.render("Home",{
                 title: "LOGIN",
@@ -75,7 +77,7 @@ router.get("/create",autorizado,(req,res)=>{
 router.post("/create/admin",autorizado,(req,res)=>{
     let body= req.body;
 
-    const user= datosSchema(req.body);
+    const user= userSchema(req.body);
     user.save().then(()=> {
         console.log("Empleado creado");
         res.redirect("/admin/home");
@@ -89,7 +91,7 @@ router.post("/create/admin",autorizado,(req,res)=>{
 //seleccionar usuario
 router.get("/update/:id",autorizado,(req,res)=>{
     let id= req.params.id;
-    datosSchema.findById(id, (error, data)=>{
+    userSchema.findById(id, (error, data)=>{
         res.render("update",{
             title: "LOGIN",
             tasks: data
@@ -101,7 +103,7 @@ router.get("/update/:id",autorizado,(req,res)=>{
 router.post("/update/user/:id",autorizado,(req,res)=>{
     const  id = req.params.id;
     const {dui,first_name,last_name,email}= req.body;
-    datosSchema.findByIdAndUpdate(id,{dui,first_name,last_name,email}).then(()=>{
+    userSchema.findByIdAndUpdate(id,{dui,first_name,last_name,email}).then(()=>{
         res.redirect("/admin/home");
     }).catch((error)=> console.error(error));
 });
@@ -110,12 +112,48 @@ router.post("/update/user/:id",autorizado,(req,res)=>{
 //eliminar usuario
 router.get("/delete/:id",autorizado,(req,res)=>{
     let id= req.params.id;
-    datosSchema.remove({_id: id},(error, data)=>{
+    userSchema.remove({_id: id},(error, data)=>{
         if (error) throw error;
         console.log("Eliminado");
         res.redirect("/admin/home");
     });
 });
+
+//home empleado
+router.get("/empleado/:email",(req,res)=>{
+    let mail= req.params.email;
+    global2= mail;
+    userSchema.find({email:mail},(err,data)=>{
+        if(err) throw err;
+            res.render("Empleado",{
+                title: "LOGIN",
+                datos: data
+            });
+        
+    });
+});
+
+//seleccionar empleado y listar
+router.get("/editar/:id",(req,res)=>{
+    let id= req.params.id;
+    userSchema.findById(id, (error, data)=>{
+        res.render("Updateemp",{
+            title: "LOGIN",
+            tasks: data
+        });
+    });
+});
+
+//actualizar empleado
+router.post("/actualizacion/:id",(req,res)=>{
+    const  id = req.params.id;
+    const camino2= "/empleado/"+global2;
+    const {birthday,address,phone,vaccinate}= req.body;
+    userSchema.findByIdAndUpdate(id,{birthday,address,phone,vaccinate}).then(()=>{
+        res.redirect(camino2);
+    }).catch((error)=> console.error(error));
+});
+
 
 
 module.exports= router;

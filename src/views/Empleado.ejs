@@ -8,8 +8,7 @@
 
     <body>
         <div class="container">
-            <h1>HOME</h1>
-            <a class="btn btn-primary" href="/create" role="button">CREATE</a>
+            <h1>HOME EMPLOYEE</h1>
             <a class="btn btn-danger" href="/logout" style="float: right;">Cerrar Sesion</a>
         </div>  
         <hr>
@@ -19,26 +18,23 @@
                 <table class="table table-dark table-striped">
                     <thead>
                         <tr>
-                            <th>DUI</th>
-                            <th>Nombres</th>
-                            <th>Apellidos</th>
-                            <th>Correo</th>
-                            <th>Admin</th>
+                            <th>BIRTHDAY</th>
+                            <th>ADDRESS</th>
+                            <th>PHONE</th>
+                            <th>VACCINATE</th>
                             <th>Operacion</th>
                         </tr>
 
                     </thead>
 
                     <tbody>
-                        <%for (var i=0; i < tasks.length; i++) {%>
+                        <%for (var i=0; i < datos.length; i++) {%>
                             <tr>
-                                <td><%= tasks[i].dui %></td>
-                                <td><%= tasks[i].first_name %></td>
-                                <td><%= tasks[i].last_name %></td>
-                                <td><%= tasks[i].email %></td>
-                                <td><%= tasks[i].admin %></td>
-                                <td><a class="btn btn-primary" href="/update/<%= tasks[i]._id%>">Update</a>
-                                <a class="btn btn-danger" href="/delete/<%= tasks[i]._id%>">Delete</a></td>
+                                <td><%= datos[i].birthday %></td>
+                                <td><%= datos[i].address %></td>
+                                <td><%= datos[i].phone %></td>
+                                <td><%= datos[i].vaccinate %></td>
+                                <td><a class="btn btn-primary" href="/editar/<%= datos[i]._id%>">Update</a>
                             </tr>
                         <%} %>
                     </tbody>
