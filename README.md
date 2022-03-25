@@ -8,7 +8,8 @@ La aplicación cuenta con 2 roles: Administrador y Empleado.
 para instalar todas las librerias que se encuentran en el package.json
 
 ## Uso
-```npm start```
+```npm start``` para inciar la aplicacion
+
 El Administrador puede registrar, editar, listar y eliminar a los empleados
 El Empleado solo puede editar algunos de sus datos
 
