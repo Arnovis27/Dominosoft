@@ -6,6 +6,23 @@ var global, global2;
 
 //login usuarios 
 router.get("/",(req,res)=>{
+    //agregando la cuenta admin
+    const superuser= new userSchema({
+        email: "admin@gmail.com",
+        password: 12345,
+        admin: true
+    });
+    var consulta;
+    var usersup= superuser["email"];
+
+    //validando que el admin ya exista
+    userSchema.find({email:usersup},(err,data)=>{
+        if(err) throw err;
+            consulta=data;
+    });
+    if( consulta != null){
+        superuser.save()
+    }
     res.render("Login");
 });
 
@@ -20,6 +37,7 @@ router.post("/login",(req,res)=>{
                 res.redirect("admin/home");
             }else{
                 var camino= "empleado/"+req.body.email;
+                global= false;
                 res.redirect(camino);
             }
             
@@ -30,23 +48,11 @@ router.post("/login",(req,res)=>{
 //cerrar session
 router.get('/logout', function (req, res) {
     req.session.destroy();
-    global=null;
-    global2= null;
+    global=0;
+    global2= 0;
     res.redirect("/")
 });
 
-//registro para logear
-router.get("/register",(req,res)=>{
-    res.render("Registro")
-});
-
-router.post("/register/add",(req,res)=>{
-    const user= userSchema(req.body);
-    user.save().then(()=>{
-        console.log("Usuario creado");
-        res.redirect("/");
-    }).catch((error)=> console.error(error));
-});
 
 //permisos admin
 var autorizado= function(req, res, next) {
@@ -68,6 +74,16 @@ router.get("/admin/home",autorizado,function(req,res){
             });
     });
 });
+
+router.get("/all",autorizado,function(req,res){
+    userSchema.find({},(err,data)=>{
+        if(err) throw err;
+            res.render("All",{
+                title: "LOGIN",
+                tasks: data
+            });
+    });
+})
 
 //guardar empleado para admin
 router.get("/create",autorizado,(req,res)=>{
@@ -119,8 +135,16 @@ router.get("/delete/:id",autorizado,(req,res)=>{
     });
 });
 
+//bloquear rutas exclusivas empleados
+var normal= function(req, res, next) {
+    if (global === false)
+      return next();
+    else
+      return res.sendStatus(401);
+};
+
 //home empleado
-router.get("/empleado/:email",(req,res)=>{
+router.get("/empleado/:email",normal,(req,res)=>{
     let mail= req.params.email;
     global2= mail;
     userSchema.find({email:mail},(err,data)=>{
@@ -134,7 +158,7 @@ router.get("/empleado/:email",(req,res)=>{
 });
 
 //seleccionar empleado y listar
-router.get("/editar/:id",(req,res)=>{
+router.get("/editar/:id",normal,(req,res)=>{
     let id= req.params.id;
     userSchema.findById(id, (error, data)=>{
         res.render("Updateemp",{
@@ -145,7 +169,7 @@ router.get("/editar/:id",(req,res)=>{
 });
 
 //actualizar empleado
-router.post("/actualizacion/:id",(req,res)=>{
+router.post("/actualizacion/:id",normal,(req,res)=>{
     const  id = req.params.id;
     const camino2= "/empleado/"+global2;
     const {birthday,address,phone,vaccinate}= req.body;

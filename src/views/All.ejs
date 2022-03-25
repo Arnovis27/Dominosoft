@@ -8,9 +8,8 @@
 
     <body>
         <div class="container">
-            <h1>HOME</h1>
-            <a class="btn btn-primary" href="/create" role="button">CREATE</a>
-            <a class="btn btn-primary" href="/all" role="button">READ ALL DATA</a>
+            <h1>EMPLOYEE</h1>
+            <a class="btn btn-primary" href="/admin/home">Back</a>
             <a class="btn btn-danger" href="/logout" style="float: right;">Cerrar Sesion</a>
         </div>  
         <hr>
@@ -24,8 +23,8 @@
                             <th>Nombres</th>
                             <th>Apellidos</th>
                             <th>Correo</th>
-                            <th>Admin</th>
-                            <th>Operacion</th>
+                            <th>Phone</th>
+                            <th>Vaccinate</th>
                         </tr>
 
                     </thead>
@@ -37,9 +36,8 @@
                                 <td><%= tasks[i].first_name %></td>
                                 <td><%= tasks[i].last_name %></td>
                                 <td><%= tasks[i].email %></td>
-                                <td><%= tasks[i].admin %></td>
-                                <td><a class="btn btn-primary" href="/update/<%= tasks[i]._id%>">Update</a>
-                                <a class="btn btn-danger" href="/delete/<%= tasks[i]._id%>">Delete</a></td>
+                                <td><%= tasks[i].phone %></td>
+                                <td><%= tasks[i].vaccinate %></td>
                             </tr>
                         <%} %>
                     </tbody>
