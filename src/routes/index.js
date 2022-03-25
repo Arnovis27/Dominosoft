@@ -3,6 +3,8 @@ const router= express.Router();
 const userSchema= require("../model/user");
 const datosSchema= require("../model/datos");
 
+var global;
+
 //login usuarios 
 router.get("/",(req,res)=>{
     res.render("Login");
@@ -12,9 +14,24 @@ router.post("/login",(req,res)=>{
     const { email ,password}  = req.body;
     userSchema.findOne({email,password}).then((data)=> {
         if (data != null){
-            res.redirect("admin/home")
+            req.session.user= req.body.email;
+            req.session.admin=data.admin;
+            if(req.session.admin== true){
+                global= req.session.admin;
+                res.redirect("admin/home");
+            }else{
+                res.redirect("/");
+            }
+            
         }
     });
+});
+
+//cerrar session
+router.get('/logout', function (req, res) {
+    req.session.destroy();
+    global=null;
+    res.redirect("/")
 });
 
 //registro para logear
@@ -30,8 +47,16 @@ router.post("/register/add",(req,res)=>{
     }).catch((error)=> console.error(error));
 });
 
+//permisos admin
+var autorizado= function(req, res, next) {
+    if (global === true)
+      return next();
+    else
+      return res.sendStatus(401);
+};
+
 //dashboard admin
-router.get("/admin/home",(req,res)=>{
+router.get("/admin/home",autorizado,function(req,res){
 
     datosSchema.find({},(err,data)=>{
         if(err) throw err;
@@ -43,13 +68,12 @@ router.get("/admin/home",(req,res)=>{
 });
 
 //guardar empleado para admin
-router.get("/create",(req,res)=>{
+router.get("/create",autorizado,(req,res)=>{
     res.render("Create")
 });
 
-router.post("/create/admin",(req,res)=>{
+router.post("/create/admin",autorizado,(req,res)=>{
     let body= req.body;
-    console.log(body);
 
     const user= datosSchema(req.body);
     user.save().then(()=> {
@@ -63,7 +87,7 @@ router.post("/create/admin",(req,res)=>{
 
 //actualizar empleado para admin
 //seleccionar usuario
-router.get("/update/:id",(req,res)=>{
+router.get("/update/:id",autorizado,(req,res)=>{
     let id= req.params.id;
     datosSchema.findById(id, (error, data)=>{
         res.render("update",{
@@ -74,7 +98,7 @@ router.get("/update/:id",(req,res)=>{
 });
 
 //actualizar usuario
-router.post("/update/user/:id",(req,res)=>{
+router.post("/update/user/:id",autorizado,(req,res)=>{
     const  id = req.params.id;
     const {dui,first_name,last_name,email}= req.body;
     datosSchema.findByIdAndUpdate(id,{dui,first_name,last_name,email}).then(()=>{
@@ -84,7 +108,7 @@ router.post("/update/user/:id",(req,res)=>{
 
 
 //eliminar usuario
-router.get("/delete/:id",(req,res,next)=>{
+router.get("/delete/:id",autorizado,(req,res)=>{
     let id= req.params.id;
     datosSchema.remove({_id: id},(error, data)=>{
         if (error) throw error;
@@ -92,5 +116,6 @@ router.get("/delete/:id",(req,res,next)=>{
         res.redirect("/admin/home");
     });
 });
+
 
 module.exports= router;

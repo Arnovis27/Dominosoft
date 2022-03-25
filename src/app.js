@@ -6,6 +6,8 @@ const mongoose= require("mongoose");
 const bodyParser= require("body-parser");
 const path= require("path");
 require("dotenv").config();
+var session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 //requeriment
 const ruta= require("./routes/index");
@@ -16,7 +18,13 @@ app.set("view engine", "ejs");
 
 //middleware
 app.use(logger("dev"));
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use( session( {
+    secret: process.env.TOKEN_SECRET,
+    resave: true,
+    saveUninitialized: true
+}));
 
 //database
 mongoose.connect(process.env.MONGODB_URI).then(()=>{

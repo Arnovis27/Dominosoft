@@ -10,9 +10,9 @@ const userSchema= mongosee.Schema({
         type: String,
         required: true
     },
-    role:{
-        type: String,
-        default: 'user'
+    admin:{
+        type: Boolean,
+        default: 'false'
     },
 });
 
