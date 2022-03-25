@@ -31,6 +31,17 @@ generar la cookie donde van a estar las sessiones
 Para la base de datos se utlizo una variable de entorno denominada MONGODB_URI, la cual almacena 
 el valor de URL de la base de datos de mongodb atlas https://studio3t.com/knowledge-base/articles/connect-to-mongodb-atlas/
 
+## Pruebas
+
+Login principal
+![Alt text](img/Login.JPG)
+
+Dashboard Admin
+![Alt text](img/Admin.JPG)
+
+Dashboard Employee
+![Alt text](img/HomeEmployee.JPG)
+
 ## Estado del proyecto
 En base a los conocimientos que tengo,en el momento (25 marzo de 2022), el software se encuentra en una fase
 beta, debido a que hicieron falta algunas validaciones que necesitan realizarse desde el FRONT
