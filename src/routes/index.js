@@ -172,8 +172,8 @@ router.get("/editar/:id",normal,(req,res)=>{
 router.post("/actualizacion/:id",normal,(req,res)=>{
     const  id = req.params.id;
     const camino2= "/empleado/"+global2;
-    const {birthday,address,phone,vaccinate}= req.body;
-    userSchema.findByIdAndUpdate(id,{birthday,address,phone,vaccinate}).then(()=>{
+    const {birthday,address,phone,password,vaccinate}= req.body;
+    userSchema.findByIdAndUpdate(id,{birthday,address,phone,password,vaccinate}).then(()=>{
         res.redirect(camino2);
     }).catch((error)=> console.error(error));
 });
