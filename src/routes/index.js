@@ -4,25 +4,27 @@ const userSchema= require("../model/user");
 
 var global, global2;
 
+//agregando la cuenta admin
+const superuser= new userSchema({
+    email: "admin@gmail.com",
+    password: 12345,
+    admin: true
+});
+var consulta;
+var usersup= superuser["email"];
+
+//validando que el admin ya exista
+userSchema.findOne({email:usersup}).then((data)=>{
+    consulta =data;
+    if( consulta== null ){
+        superuser.save()
+        console.log("Admin creado");
+    }
+});
+
+
 //login usuarios 
 router.get("/",(req,res)=>{
-    //agregando la cuenta admin
-    const superuser= new userSchema({
-        email: "admin@gmail.com",
-        password: 12345,
-        admin: true
-    });
-    var consulta;
-    var usersup= superuser["email"];
-
-    //validando que el admin ya exista
-    userSchema.find({email:usersup},(err,data)=>{
-        if(err) throw err;
-            consulta=data;
-    });
-    if( consulta != null){
-        superuser.save()
-    }
     res.render("Login");
 });
 
